@@ -1,8 +1,18 @@
 from setuptools import setup
 from glob import glob
 import os
+import subprocess
 
 package_name = 'voicevox_ros2'
+
+_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+_dir = os.path.join(_dir, 'src', 'voicevox_ros2')
+if os.path.exists(os.path.join(_dir, "voicevox_core")):
+    pass
+else:
+    with open(os.devnull, 'w') as null_file:
+        subprocess.call(["bash", os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "setup.bash")], 
+                        stdout=null_file, stderr=subprocess.STDOUT)
 
 setup(
     name=package_name,

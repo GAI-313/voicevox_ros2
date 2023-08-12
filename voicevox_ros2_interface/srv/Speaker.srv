@@ -1,0 +1,4 @@
+string text
+int8 id
+---
+bool success

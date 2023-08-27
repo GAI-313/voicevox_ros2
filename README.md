@@ -193,9 +193,15 @@ if __name__ == '__main__':
 ||内緒話|50|
 
 # リマインド
-　*voicevox_tts*
-に
-*state_machine*
-に対応したクラス
-*tts_SperakerState*
-を実装予定です。もしかしたらクラス名を変更するかもしれません。
+- **StateMachine（smach）対応のクラス**<br>
+    *voicevox_tts*
+    に
+    *state_machine*
+    に対応したクラス
+    *tts_SperakerState*
+    を実装予定です。もしかしたらクラス名を変更するかもしれません。
+
+- **Docker 環境開発**<br>
+    　開発環境は Docker を使用して行なっており、このパッケージが使用できる Dockerfile と docker-compose 環境を開発する予定です。<br>
+    docekr コンテナ同士円滑にトピックを渡せるよう
+    ```std_msgs``` のみでやり取りできるトピックも開発しようと思います。

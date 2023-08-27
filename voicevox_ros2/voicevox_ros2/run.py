@@ -4,7 +4,8 @@ import message_filters
 import rclpy
 from rclpy.node import Node
 from voicevox_ros2_interface.msg import Speaker 
-from voicevox_ros2_interface import srv 
+from voicevox_ros2_interface import srv
+from std_msgs.msg import String
 ## VOICEVOX LIBS
 import dataclasses
 import json
@@ -26,6 +27,7 @@ import time
 #import sounddevice as sd
 #import soundfile as sf
 import simpleaudio
+import threading
 
 class Voicevox_ros2(Node):
     def __init__(self):
@@ -33,23 +35,34 @@ class Voicevox_ros2(Node):
         self.get_logger().info("start voicevox_ros2 ")
 
         self.text = self.id = None
+        self.status = 'launch'
+        self.string = String()
 
+        self.result_pub = self.create_publisher(String, "voicevox_ros2/status", 10)
         self.sub = self.create_subscription(Speaker, "voicevox_ros2/speaker", self.msg_cb, 10)
         self.srv = self.create_service(srv.Speaker, "voicevox_ros2/speaker_srv", self.srv_cb)
 
+        # self.pub_timer = self.create_timer(0.005, self.state_publish)
+        self.pub_thread = threading.Thread(target=self.state_publish) # 別スレッドで state_publish を実行
+        self.pub_thread.start()
+
     def __del__(self):
+        self.status = 'finish'
         self.get_logger().info("done.")
 
     def srv_cb(self, req, res):
+        self.status = "getsrv"
         self.generate_voice(req.text, req.id)
         res.success = True
         return res
 
     def msg_cb(self, msg):
+        self.status = "gettopic"
         self.generate_voice(msg.text, msg.id)
 
     def generate_voice(self, text, speaker_id):
         try:
+            self.state = "wait"
             jtalk_path = os.getenv('JTALK_PATH')
             home_path = os.getenv('HOME')
             
@@ -74,8 +87,23 @@ class Voicevox_ros2(Node):
             play_obj.wait_done()
             os.remove(generate_path)
             #self.speaker_id = self.text = None
+            self.status = "done"
         except Exception as e:
+            self.status = "error"
             print(e)
+
+    def state_publish(self):
+        status_b = ''
+        while rclpy.ok():
+            if self.status != status_b:
+                #print(self.status)
+                self.string.data = self.status
+                self.result_pub.publish(self.string)
+                
+            status_b = self.status
+            if self.status == 'done':
+                self.status = 'wait'
+            #rclpy.spin_once(self)
 
 def main():
     try:

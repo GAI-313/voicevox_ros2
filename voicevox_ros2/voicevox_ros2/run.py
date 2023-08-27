@@ -13,6 +13,9 @@ from argparse import ArgumentParser
 from pathlib import Path
 from typing import Tuple
 
+import ctypes
+#ctypes.cdll.LoadLibrary('/voicevox/onnxruntime-linux-x64-1.13.1/lib/libonnxruntime.so')
+
 import voicevox_core
 from voicevox_core import AccelerationMode, AudioQuery, VoicevoxCore
 
@@ -49,7 +52,9 @@ class Voicevox_ros2(Node):
         try:
             jtalk_path = os.getenv('JTALK_PATH')
             home_path = os.getenv('HOME')
+            
             generate_path = home_path + "/colcon_ws/src/voicevox_ros2/voicevox_ros2/voicevox_ros2/output.wav"
+            generate_path = __file__.replace("run.py", "output.wav")
 
             out = Path(generate_path)
             acceleration_mode = AccelerationMode.AUTO

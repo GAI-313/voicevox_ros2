@@ -83,7 +83,7 @@ ros2 run voicevox_ros2 voicevox_ros2_core
 
 ## 関数 tts_speaker を使用する
 　voicevox_ros2 には簡易的に voicevox_ros2 を使用するための関数
-```voicevox_ros2_tts.tty_speaker```
+```voicevox_ros2_tts.tts_speaker```
 が用意されており、
 ```setup.sh```
 を実行していれば、すぐにこの関数を使用することができます。この関数を使用するには、以下のサンプルコードを参考にしてください。

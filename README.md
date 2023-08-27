@@ -6,7 +6,7 @@ VOICEVOX
 ```
 /path/to/voicevox_core/setup.sh
 ```
-次おづインストールが完了したらビルドを実行してください。
+　インストールが完了したらビルドを実行してください。
 このパッケージのみをビルドする場合
 ```
 cd /path/to/your_workspace

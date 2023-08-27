@@ -109,7 +109,7 @@ if __name__ == '__main__':
     node.destroy_node()
 ```
 
-　```tty_speaker```
+　```tts_speaker```
 は、以下の引数を求めます。
 
 - **node（必須）**<br>

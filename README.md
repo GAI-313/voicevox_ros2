@@ -201,6 +201,9 @@ if __name__ == '__main__':
     *tts_SperakerState*
     を実装予定です。もしかしたらクラス名を変更するかもしれません。
 
+    - **voicevox_ros2_coreをStateMachineに最適化**<br>
+        発音完了したら返り値を渡すようにして、関連クラスやステートマシーン上で発音されるまで待機できるようにする
+
 - **Docker 環境開発**<br>
     　開発環境は Docker を使用して行なっており、このパッケージが使用できる Dockerfile と docker-compose 環境を開発する予定です。<br>
     docekr コンテナ同士円滑にトピックを渡せるよう

@@ -81,27 +81,27 @@ ros2 run voicevox_ros2 voicevox_ros2_core
     **[キャラクターID一覧](#id)**
     を参照してください。
 
-## 関数 tts_speaker を使用する
-　voicevox_ros2 には簡易的に voicevox_ros2 を使用するための関数
+## メソッド tts_speaker を使用する
+　voicevox_ros2 には簡易的に voicevox_ros2 を使用するためのメソッド
 ```voicevox_ros2_tts.tts_speaker```
 が用意されており、
 ```setup.sh```
-を実行していれば、すぐにこの関数を使用することができます。この関数を使用するには、以下のサンプルコードを参考にしてください。
+を実行していれば、すぐにこのメソッドを使用することができます。このメソッドを使用するには、以下のサンプルコードを参考にしてください。
 ```python
 #!/usr/bin/emv python3
 
 ## ROS2 ノード関連
 from rclpy.node import Node
 import rclpy
-## tts_speaker 関数をインポート
+## tts_speaker メソッドをインポート
 from voicevox_ros2_tts import tts_speaker
 
 # debug
 if __name__ == '__main__':
-    ## 関数を使用する前にノードを立ててください。
+    ## メソッドを使用する前にノードを立ててください。
     rclpy.init()
     node = rclpy.create_node('vvr2_common_test')
-    ## 関数を使用する
+    ## メソッドを使用する
     tts_speaker(node, text='こんにちは！', id=26)
     ## 終了
     print('done')
@@ -135,6 +135,94 @@ if __name__ == '__main__':
     です。キャラクターIDについては、
     **[キャラクターID一覧](#id)**
     を参照してください。
+
+- **timeout**<br>
+    デフォルト値：
+    ```5```
+    (int)<br>
+    *voicevox_ros2_core*
+    ノードが起動するまでの待機時間を設定します。単位は
+    **秒(sec)**
+    です。指定した時間を過ぎたらメソッドは正常に終了します。
+
+- **wait**<br>
+    デフォルト値：
+    ```True```
+    (bool)<br>
+    発音が完了するまで待機するかどうかを設定します。
+    - ***True***<br>
+        発音が完了するまで待機します。
+    - ***False***<br>
+        発音が完了しなくても後続のプロセスを実行します。
+
+## StateMachine（Smach、状態遷移）に組み込む
+　状態遷移プロセスに VoiceVox_Ros2 を組み込む場合、以下のモジュールとメソッドをインポートしてください。
+```python
+from voicevox_ros2_tts import tts_SpeakerState
+```
+　メソッド
+*tts_SpeakerState*
+には以下の引数を要求します。
+
+- **node（必須）**<br>
+    ```rclpy.node.Node```
+    または
+    ```rclpy.create_node```
+    により定義された
+    **Node オブジェクト**
+    を代入してください。
+
+- **text**<br>
+    デフォルト値：
+    ```"テキスト引数が指定されていません。"```
+    (str)<br>
+    VoiceVox に発音させたいテキストを入力してください。
+
+- **id**<br>
+    デフォルト値：
+    ```3```
+    (int)<br>
+    VoiceVox から発音するキャラクターIDを入力してください。デフォルトキャラクターは
+    **ずんだもん（ノーマル）**
+    です。キャラクターIDについては、
+    **[キャラクターID一覧](#id)**
+    を参照してください。
+
+- **timeout**<br>
+    デフォルト値：
+    ```5```
+    (int)<br>
+    *voicevox_ros2_core*
+    ノードが起動するまでの待機時間を設定します。単位は
+    **秒(sec)**
+    です。指定した時間を過ぎたら state は
+    ```failure```
+    を返します。
+
+- **wait**<br>
+    デフォルト値：
+    ```True```
+    (bool)<br>
+    　発音が完了するまで待機するかどうかを設定します。
+    - ***True***<br>
+        発音が完了するまで待機します。
+    - ***False***<br>
+        発音が完了しなくても後続のプロセスを実行します。
+
+　このステートは以下の結果を返します。
+
+- ***success***<br>
+    　正常に
+    *voicevox_ros2_node*
+    がプロセスを遂行した。
+    
+- ***timeout***<br>
+    　プロセスが引数
+    ```timeout```
+    まで正常に動作しなかった。
+    
+- ***failure***<br>
+    　プロセスが重篤なエラーにより停止した
 
 <a id="id"></a>
 # キャラクター ID 一覧

@@ -3,6 +3,7 @@ from rclpy.node import Node
 import rclpy
 
 from voicevox_ros2_interface.msg import Speaker
+from std_msgs.msg import String
 
 import threading
 import time
@@ -12,7 +13,7 @@ import traceback
 import smach
 
 class tts_speaker():
-    def __init__(self, node=None, text='テキスト引数が指定されていません。', id=3, timeout=5):
+    def __init__(self, node=None, text='テキスト引数が指定されていません。', id=3, timeout=5, wait=True):
         ### node arg check
         if type(node) is not Node:
             rclpy.logging.get_logger('VoiceVox_tty_speaker').error('''
@@ -23,19 +24,31 @@ please add the Node type instant
 This error happend in function : tty_speaker
             ''')
             sys.exit()
+
+        self.wait = wait
+        self.node = node
+
+        if self.wait:
+            self.status_flag = False
+            self.msg_bu = None
+            self.status_sub = self.node.create_subscription(String, '/voicevox_ros2/status', self._cb_status, 10)
         
         self.text = text
         self.id = id
-        self.node = node
         self.init_time = time.time()
         self.timeout = timeout
 
         self.pub = self.node.create_publisher(Speaker, '/voicevox_ros2/speaker', 10)
 
+        self.thread = threading.Thread(target=self.execute, daemon=True)
+        self.thread.start()
+        #self.execute()
 
-        #self.thread = threading.Thread(target=rclpy.spin, args=(self.node,), daemon=True)
-        #self.thread.start()
-        self.execute()
+    def _cb_status(self, msg):
+        print(msg)
+        if msg.data == 'done':
+            print('well')
+            self.status_flag = True
 
     def execute(self):
         while True:
@@ -48,6 +61,7 @@ This error happend in function : tty_speaker
                 sp.id = self.id
 
                 self.pub.publish(sp)
+
                 break
             except rclpy._rclpy_pybind11.NodeNameNonExistentError:
                 if time.time() - self.init_time > self.timeout:
@@ -59,6 +73,10 @@ ros2 run viocevox_ros2 voicevox_ros2_core
                     ''')
                     break
                 continue
+
+        if self.wait:
+            while not self.status_flag:
+                pass
 
 class tts_SpeakerState(smach.State):
     def __init__(self, node, text='テキスト引数が指定されていません。', id=3, timeout=5):
@@ -109,12 +127,10 @@ This error happend in function : tty_speaker
             return 'failure'
 
 # debug
-'''
 if __name__ == '__main__':
     rclpy.init()
     node = rclpy.create_node('vvr2_common_test')
-    tts_speaker()
+    tts_speaker(node=node, text='こんにちは！これはスピーカーレスポンステストです。生麦生米生卵')
     print('done')
     rclpy.shutdown()
     node.destroy_node()
-'''

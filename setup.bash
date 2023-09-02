@@ -16,7 +16,11 @@ bashrc_path=~/.bashrc
 if grep -qF "$search_string" "$bashrc_path"; then
     :
 else
+<<<<<<< HEAD
     pip install simpleaudio
+=======
+    pip install playsound
+>>>>>>> 328f79a784210f9502acf5667c9fb91d438c21ef
     echo "LISTEN! : THIS PACKAGE NEED SOMEN PACKAGES. PLEASE ENTER THE PASSWORD"
     sudo apt update; sudo apt install -y python3-gst-1.0
     cd $current_dir/voicevox_core

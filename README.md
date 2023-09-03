@@ -1,4 +1,11 @@
 # voicevox_ros2
+## ROS1 版 voicevox_ros
+　ROS1 Noetic に対応した voicevox tts パッケージ、
+***voicevox_ros***
+は、以下のリポジトリを参照してください。
+
+- https://github.com/GAI-313/voicevox_ros/tree/master
+
 ## インストール
 　このパッケージを最初にビルドすると、
 VOICEVOX

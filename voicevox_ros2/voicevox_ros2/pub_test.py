@@ -14,7 +14,8 @@ def main():
     rate = node.create_rate(10)
 
     sp = Speaker()
-    sp.text = "こんにちは。ボイスボックスロスツー、パブテストからの通信です。"
+    sp.text = "こんにちは。ボイスボックスロスツー、publishからの通信です。"
+    sp.text = "64_cell_phone"
     sp.id = 3
 
     sp_pub = node.create_publisher(Speaker, "/voicevox_ros2/speaker", 10)

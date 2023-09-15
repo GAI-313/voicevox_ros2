@@ -11,6 +11,7 @@ from std_msgs.msg import String
 import dataclasses
 import json
 import logging
+import re
 from argparse import ArgumentParser
 from pathlib import Path
 from typing import Tuple
@@ -36,6 +37,20 @@ class Voicevox_ros2(Node):
         self.get_logger().info("start voicevox_ros2 ")
 
         self.text = self.id = None
+
+        # 英語辞書作成
+        self.get_logger().info(os.getenv('KANAENG_PATH'))
+        self.dict_path = os.getenv('KANAENG_PATH')
+        self.dict = {}
+        with open(self.dict_path, mode='r', encoding='utf-8') as f:
+            lines = f.readlines()
+            for i, line in enumerate(lines):
+                if i >= 6:
+                    line_list = line.replace('\n', '').split(' ')
+                    self.dict[line_list[0]] = line_list[1]
+        # 短縮形
+        self.reduction=[["It\'s","イッツ"],["I\'m","アイム"],["You\'re","ユーァ"],["He\'s","ヒーィズ"],["She\'s","シーィズ"],["We\'re","ウィーアー"],["They\'re","ゼァー"],["That\'s","ザッツ"],["Who\'s","フーズ"],["Where\'s","フェアーズ"],["I\'d","アイドゥ"],["You\'d","ユードゥ"],["I\'ve","アイブ"],["I\'ll","アイル"],["You\'ll","ユール"],["He\'ll","ヒール"],["She\'ll","シール"],["We\'ll","ウィール"]]
+
         self.status = 'launch'
         self.string = String()
 
@@ -61,14 +76,42 @@ class Voicevox_ros2(Node):
         self.status = "gettopic"
         self.generate_voice(msg.text, msg.id)
 
+    def eng_to_kana(self, text):
+        # 読み上げ可能単語を変換
+        text = text.replace("+"," プラス ").replace("＋"," プラス ").replace("-"," マイナス ").replace("="," イコール ").replace("＝"," イコール ")
+        # No.2、No6みたいに、No.の後に数字が続く場合はノーではなくナンバーと読む
+        text = re.sub(r'No\.([0-9])',"ナンバー\\1",text)
+        text = re.sub(r'No([0-9])',"ナンバー\\1",text)
+        # 短縮形の処理
+        for red in self.reduction: text = text.replace(red[0]," "+red[1]+" ")
+        # this is a pen.のように、aの後に半角スペース、続いてアルファベットの場合、エーではなくアッと呼ぶ
+        text = re.sub(r'a ([a-zA-Z])',"アッ \\1",text)
+        # 文を区切る文字は消してはダメなので、前後に半角スペースを挟む
+        text = text.replace("."," . ").replace("。"," 。 ").replace("!"," ! ").replace("！"," ！ ")
+        # アルファベットとアルファベット以外が近接している時、その間に半角スペースを挟む（この後、英単語を単語ごとに区切るための前準備）
+        text_l=list(text)
+        for i in range(len(text))[::-1][:-1]:
+            if re.compile("[a-zA-Z]").search(text_l[i]) and re.compile("[^a-zA-Z]").search(text_l[i-1]): text_l.insert(i," ")
+            elif re.compile("[^a-zA-Z]").search(text_l[i]) and re.compile("[a-zA-Z]").search(text_l[i+-1]): text_l.insert(i," ")
+        # 半角スペースや読まなくて良い文字で区切り、各単語の英語をカタカナに変換
+        text_split = re.split('[ \,\*\-\_\=\(\)\[\]\'\"\&\$　]',text)
+        for i in range(len(text_split)):
+            if str.upper(text_split[i]) in self.dict:
+                text_split[i] = self.dict[str.upper(text_split[i])]
+
+        return (" ".join(text_split))
+
     def generate_voice(self, text, speaker_id):
         try:
             self.state = "wait"
             jtalk_path = os.getenv('JTALK_PATH')
             home_path = os.getenv('HOME')
             
-            generate_path = home_path + "/colcon_ws/src/voicevox_ros2/voicevox_ros2/voicevox_ros2/output.wav"
             generate_path = __file__.replace("run.py", "output.wav")
+
+            # 英単語からカタカナに変換
+            text = self.eng_to_kana(text)
+            text = text.replace(" ", "")
 
             out = Path(generate_path)
             acceleration_mode = AccelerationMode.AUTO
@@ -115,51 +158,6 @@ def main():
         rclpy.shutdown()        
     except KeyboardInterrupt:
         pass
-"""
-def parse_args() -> Tuple[AccelerationMode, Path, str, Path, int]:
-    #home_path = os.getenv('HOME')
-    jtalk_path = os.getenv('JTALK_PATH')
-
-    if jtalk_path is None:
-        print("ERROR! env JTALK_PATH is not exist. please define it")
-        os._exit(-1)
-
-    argparser = ArgumentParser()
-    argparser.add_argument(
-        "--mode",
-        default="AUTO",
-        type=AccelerationMode,
-        help='モード ("AUTO", "CPU", "GPU")',
-    )
-    argparser.add_argument(
-        "--dict-dir",
-        default= jtalk_path,
-        type=Path,
-        help="Open JTalkの辞書ディレクトリ",
-    )
-    argparser.add_argument(
-        "--text",
-        default="この音声は、ボイスボックスロスツーを使用して、出力されています。",
-        help="読み上げさせたい文章",
-    )
-    argparser.add_argument(
-        "--out",
-        default="./output.wav",
-        type=Path,
-        help="出力wavファイルのパス",
-    )
-    argparser.add_argument(
-        "--speaker-id",
-        default=0,
-        type=int,
-        help="話者IDを指定",
-    )
-    args = argparser.parse_args()
-    return (args.mode)
-"""
-
-def display_as_json(audio_query: AudioQuery) -> str:
-    return json.dumps(dataclasses.asdict(audio_query), ensure_ascii=False)
 
 if __name__ == "__main__":
     main()

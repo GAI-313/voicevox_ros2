@@ -6,6 +6,9 @@
 
 - https://github.com/GAI-313/voicevox_ros/tree/master
 
+## アップデート
+　英単語をカタカナ変換して発音させることでカタコトながら英単語の発話に対応させました。
+　
 ## インストール
 　このパッケージを最初にビルドすると、
 VOICEVOX
@@ -288,7 +291,7 @@ from voicevox_ros2_tts import tts_SpeakerState
 ||内緒話|50|
 
 # リマインド
-- **StateMachine（smach）対応のクラス**<br>
+- **StateMachine（smach）対応のクラス（対応済み）**<br>
     *voicevox_tts*
     に
     *state_machine*
@@ -299,12 +302,12 @@ from voicevox_ros2_tts import tts_SpeakerState
     - **voicevox_ros2_coreをStateMachineに最適化**<br>
         発音完了したら返り値を渡すようにして、関連クラスやステートマシーン上で発音されるまで待機できるようにする
 
-- **Docker 環境開発**<br>
+- **Docker 環境（開発中）**<br>
     　開発環境は Docker を使用して行なっており、このパッケージが使用できる Dockerfile と docker-compose 環境を開発する予定です。<br>
     docekr コンテナ同士円滑にトピックを渡せるよう
     ```std_msgs``` のみでやり取りできるトピックも開発しようと思います。
 
-- **カタコト英語発音に対応**<br>
+- **カタコト英語発音に対応（対応済み）**<br>
 　VoiceVoxは仕様上
 **英語をネイティブに発音できません**
 。しかし、今後カタコトではあるものの英単語を発音できるように対応させる予定です。

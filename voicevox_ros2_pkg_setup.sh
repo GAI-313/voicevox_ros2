@@ -25,11 +25,6 @@ else
     pip install voicevox_core*.whl
     wget https://raw.githubusercontent.com/VOICEVOX/voicevox_core/406f6c41408836840b9a38489d0f670fb960f412/example/python/run.py
     wget https://fastapi.metacpan.org/source/MASH/Lingua-JA-Yomi-0.01/lib/Lingua/JA/bep-eng.dic
-fi
-
-if grep -qF "$search_string" "$bashrc_path"; then
-    echo "Voicevox_core setup is complete"
-else
     pip install simpleaudio
     echo "LISTEN! : THIS PACKAGE NEED SOME PACKAGES. PLEASE ENTER THE PASSWORD"
     sudo apt update

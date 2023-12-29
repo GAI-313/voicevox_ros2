@@ -45,9 +45,9 @@ This error happend in function : tty_speaker
         #self.execute()
 
     def _cb_status(self, msg):
-        print(msg)
+        #print(msg)
         if msg.data == 'done':
-            print('well')
+            #print('well')
             self.status_flag = True
 
     def execute(self):

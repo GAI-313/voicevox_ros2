@@ -11,7 +11,6 @@
 
   <depend>rosidl_default_generators</depend>
   <depend>rosidl_default_runtime</depend>
-  <depend>voicevox_ros2</depend>
   <member_of_group>rosidl_interface_packages</member_of_group>
 
   <test_depend>ament_lint_auto</test_depend>

@@ -15,14 +15,23 @@ rosidl_generate_interfaces(
     "msg/Speaker.msg"
 )
 
+# execute setup
+execute_process(
+    COMMAND bash -c "./setup.bash"
+    RESULT_VARIABLE result
+    OUTPUT_VARIABLE output
+    ERROR_VARIABLE error_output
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/..
+)
+if(result EQUAL 0)
+    message(STATUS "Command executed successfully. Output: ${output}")
+else()
+    message(FATAL_ERROR "Command failed. Error output: ${error_output}")
+endif()
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # comment the line when a copyright and license is added to all source files
   set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # comment the line when this package is in a git repo and when
-  # a copyright and license is added to all source files
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()

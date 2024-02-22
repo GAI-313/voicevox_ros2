@@ -30,9 +30,10 @@ import time
 #import soundfile as sf
 import simpleaudio
 import threading
+import argparse
 
 class Voicevox_ros2(Node):
-    def __init__(self):
+    def __init__(self, args=None):
         super().__init__("voicevox_ros2_core")
         self.get_logger().info("start voicevox_ros2 ")
 
@@ -57,9 +58,14 @@ class Voicevox_ros2(Node):
         self.sub = self.create_subscription(Speaker, "voicevox_ros2/speaker", self.msg_cb, 10)
         self.srv = self.create_service(srv.Speaker, "voicevox_ros2/speaker_srv", self.srv_cb)
 
-        # self.pub_timer = self.create_timer(0.005, self.state_publish)
-        self.pub_thread = threading.Thread(target=self.state_publish) # 別スレッドで state_publish を実行
-        self.pub_thread.start()
+        if args is None:
+            # self.pub_timer = self.create_timer(0.005, self.state_publish)
+            self.pub_thread = threading.Thread(target=self.state_publish) # 別スレッドで state_publish を実行
+            self.pub_thread.start()
+        else:
+            # voice saver
+            self.args = args
+            self.voice_saver()
 
     def __del__(self):
         self.status = 'finish'
@@ -100,14 +106,13 @@ class Voicevox_ros2(Node):
 
         return (" ".join(text_split))
 
-    def generate_voice(self, text, speaker_id):
+    def generate_voice(self, text, speaker_id,
+                        generate_path=__file__.replace("run.py", "output.wav")):
         try:
             self.state = "wait"
             jtalk_path = os.getenv('JTALK_PATH')
             home_path = os.getenv('HOME')
             
-            generate_path = __file__.replace("run.py", "output.wav")
-
             # 英単語からカタカナに変換
             text = self.eng_to_kana(text)
             text = text.replace(" ", "")
@@ -125,10 +130,14 @@ class Voicevox_ros2(Node):
             self.get_logger().info("GENERATE voice")
             #sig, sr = sf.read(generate_path, always_2d=True)
             #sd.play(sig, sr)
-            wav_obj = simpleaudio.WaveObject.from_wave_file(generate_path)
-            play_obj = wav_obj.play()
-            play_obj.wait_done()
-            os.remove(generate_path)
+
+            if self.args is None or self.args.speak:
+                wav_obj = simpleaudio.WaveObject.from_wave_file(generate_path)
+                play_obj = wav_obj.play()
+                play_obj.wait_done()
+
+            if self.args is None:
+                os.remove(generate_path)
             #self.speaker_id = self.text = None
             self.status = "done"
         except Exception as e:
@@ -144,9 +153,24 @@ class Voicevox_ros2(Node):
                 self.result_pub.publish(self.string)
                 
             status_b = self.status
-            #if self.status == 'done':
-            #    self.status = 'wait'
-            #rclpy.spin_once(self)
+
+    def voice_saver(self):
+        text = self.args.text
+        id = self.args.id
+        path = self.args.path
+        file_name = self.args.file_name
+
+        path = path + "/" + file_name + ".wav"
+        if text is not None:
+            self.get_logger().info("""Voice Saver info ...
+TEXT: %s
+VOICE ID: %d
+SAVE FOR: %s
+            """%(text, id, path))
+
+            self.generate_voice(text, id, path)
+        else:
+            self.get_logger().error("arg --text is not set!")
 
 def main():
     try:
@@ -158,5 +182,36 @@ def main():
     except KeyboardInterrupt:
         pass
 
+def voice_saver():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('-t', "--text",
+                        help="必須引数です。発話させたいテキストを入力してください。",
+                        type=str)
+    parser.add_argument('-i', "--id", 
+                        default=3,
+                        help="発話させたいキャラクターIDを選択してください。デフォルトは３です。",
+                        type=int)
+    parser.add_argument('-p', "--path", 
+                        default=os.getcwd(),
+                        help="保存先を絶対パスで記述してください。デフォルト値はカレントディレクトリです。",
+                        type=str)
+    parser.add_argument('-f', "--file_name",
+                        default='output',
+                        help="ファイル名を指定してください。デフォルト名はは output です。拡張子を書く必要はありません。",
+                        type=str)
+    parser.add_argument("--speak",
+                        default=False,
+                        help="保存後その音声ファイルを発話させます。デフォルトは False （無効）です。",
+                        type=bool)
+
+    args = parser.parse_args()
+
+    rclpy.init()
+    node = Voicevox_ros2(args)
+
+    node.destroy_node()
+    rclpy.shutdown()
+    
 if __name__ == "__main__":
-    main()
+    voice_saver()

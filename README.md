@@ -10,28 +10,18 @@
 　英単語をカタカナ変換して発音させることでカタコトながら英単語の発話に対応させました。
 　
 ## インストール
-　このパッケージを最初にビルドすると、
-VOICEVOX
-の依存関係や辞書データを自動でインストール、ダウンロードします。
+　ワークスペースディレクトリの ```/src``` にこのパッケージをクローンしてください。
 ```
-/path/to/voicevox_core/setup.sh
+cd path/to/your_ws/src
+git clone https://github.com/GAI-313/voicevox_ros2.git
 ```
-　インストールが完了したらビルドを実行してください。
-このパッケージのみをビルドする場合
+　次に、```colcon build``` でパッケージをビルドしてください。
 ```
-cd /path/to/your_workspace
-colcon build --pacakges-select voicevox_ros2
+cd /path/to/your_ws
+colcon build --packages-up-to voicevox_ros2
 ```
-ワークスペースすべてのパッケージをビルドする場合
-```
-cd /path/to/your_workspace
-colcon build --symlink-install
-```
-または
-```
-cd /path/to/your_workspace
-colcon build
-```
+```--packages-up-to``` オプションを使用することで特定のパッケージとそれに依存するパッケージをビルドします。<br>
+　依存パッケージ ```voicevox_ros2_interface``` がビルドされると自動的に **VOICEVOX_core** がインストールされます。
 
 # 使用方法
 ## 起動と確認
@@ -234,6 +224,23 @@ from voicevox_ros2_tts import tts_SpeakerState
 - ***failure***<br>
     　プロセスが重篤なエラーにより停止した
 
+## voice_saver
+　```voice_saver``` を使用すると、指定した場所に任意の音声ファイルを保存します。このノードの使用方法は以下のとおりです。ヘルプを表示するにはオプション ```-h``` をつけます。
+```
+ros2 run voicevox_ros2 voice_saver -h
+```
+　カレントディレクトリに ```こんにちは``` と発音する音声ファイルを生成するには、オプション ```-t``` に発話したいテキストを入力します。
+ ```
+ros2 run voicevox_ros2 voice_saver -t こんにちは
+```
+　オプションは以下のとおりです。
+|オプション|デフォルト値|概要|
+|:---:|:---:|:---|
+|-t , --text|なし|発話したいテキストを入力してください。必須引数です。|
+|-i , --id|3|発話させるキャラクターIDを設定します。<br>キャラクターIDは **[キャラクターID一覧](#id)** を参照してください。|
+|-p , --path|カレントディレクトリ|ファイルの保存先を絶対パスで選択します。|
+|-f , --file_name|output|ファイル名をしてします。拡張子を入力する必要はありません。|
+
 <a id="id"></a>
 # キャラクター ID 一覧
 |キャラクター名|スタイル|ID|
@@ -291,22 +298,6 @@ from voicevox_ros2_tts import tts_SpeakerState
 ||内緒話|50|
 
 # リマインド
-- **StateMachine（smach）対応のクラス（対応済み）**<br>
-    *voicevox_tts*
-    に
-    *state_machine*
-    に対応したクラス
-    *tts_SperakerState*
-    を実装予定です。もしかしたらクラス名を変更するかもしれません。
-
-    - **voicevox_ros2_coreをStateMachineに最適化**<br>
-        発音完了したら返り値を渡すようにして、関連クラスやステートマシーン上で発音されるまで待機できるようにする
-
-- **Docker 環境（開発中）**<br>
-    　開発環境は Docker を使用して行なっており、このパッケージが使用できる Dockerfile と docker-compose 環境を開発する予定です。<br>
-    docekr コンテナ同士円滑にトピックを渡せるよう
-    ```std_msgs``` のみでやり取りできるトピックも開発しようと思います。
-
 - **カタコト英語発音に対応（対応済み）**<br>
 　VoiceVoxは仕様上
 **英語をネイティブに発音できません**

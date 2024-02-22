@@ -19,6 +19,7 @@ bashrc_path=~/.bashrc
 if [ -d "$current_dir/voicevox_core" ]; then
     echo "Voicevox_core is installed"
 else
+    sudo apt install -y unzip curl
     curl -sSfL https://raw.githubusercontent.com/VOICEVOX/voicevox_core/8cf307df4412dc0db0b03c6957b83b032770c31a/scripts/downloads/download.sh | bash -s
     cd "$current_dir/voicevox_core" || exit 1
     #wget https://github.com/VOICEVOX/voicevox_core/releases/download/0.14.1/voicevox_core-0.14.1+cpu-cp38-abi3-linux_x86_64.whl

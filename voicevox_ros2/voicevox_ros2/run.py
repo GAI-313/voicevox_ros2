@@ -39,7 +39,6 @@ class Voicevox_ros2(Node):
         self.text = self.id = None
 
         # 英語辞書作成
-        self.get_logger().info(os.getenv('KANAENG_PATH'))
         self.dict_path = os.getenv('KANAENG_PATH')
         self.dict = {}
         with open(self.dict_path, mode='r', encoding='utf-8') as f:
@@ -145,8 +144,8 @@ class Voicevox_ros2(Node):
                 self.result_pub.publish(self.string)
                 
             status_b = self.status
-            if self.status == 'done':
-                self.status = 'wait'
+            #if self.status == 'done':
+            #    self.status = 'wait'
             #rclpy.spin_once(self)
 
 def main():

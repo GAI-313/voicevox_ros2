@@ -15,7 +15,7 @@ def send_req(text, id):
 def main():
     global req, cli, node
 
-    text = "サービスからの通信です。"
+    text = "ボイスボックスロスツー、サービスからの通信です。"
     id = 3
 
     rclpy.init()

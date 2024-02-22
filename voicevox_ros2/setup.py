@@ -25,6 +25,7 @@ setup(
     entry_points={
         'console_scripts': [
             "voicevox_ros2_core = voicevox_ros2.run:main",
+            "voice_saver = voicevox_ros2.run:voice_saver",
             "pub = voicevox_ros2.pub_test:main",
             "srv = voicevox_ros2.srv_test:main",
         ],

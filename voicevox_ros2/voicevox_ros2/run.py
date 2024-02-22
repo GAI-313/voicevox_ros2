@@ -38,6 +38,7 @@ class Voicevox_ros2(Node):
         self.get_logger().info("start voicevox_ros2 ")
 
         self.text = self.id = None
+        self.args = None
 
         # 英語辞書作成
         self.dict_path = os.getenv('KANAENG_PATH')

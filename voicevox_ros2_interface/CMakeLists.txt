@@ -17,12 +17,13 @@ rosidl_generate_interfaces(
 
 # execute setup
 execute_process(
-    COMMAND bash -c "./setup.bash"
+    COMMAND gnome-terminal -- bash -c "./setup.bash"
     RESULT_VARIABLE result
     OUTPUT_VARIABLE output
     ERROR_VARIABLE error_output
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/..
 )
+message(STATUS "Output of setup.bash: ${output}")
 if(result EQUAL 0)
     message(STATUS "Command executed successfully. Output: ${output}")
 else()

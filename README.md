@@ -94,7 +94,7 @@ ros2 run voicevox_ros2 voicevox_ros2_core
 from rclpy.node import Node
 import rclpy
 ## tts_speaker メソッドをインポート
-from voicevox_ros2_tts import tts_speaker
+from voicevox_ros2.voicevox_ros2_tts import tts_speaker
 
 # debug
 if __name__ == '__main__':
@@ -158,7 +158,7 @@ if __name__ == '__main__':
 ## StateMachine（Smach、状態遷移）に組み込む
 　状態遷移プロセスに VoiceVox_Ros2 を組み込む場合、以下のモジュールとメソッドをインポートしてください。
 ```python
-from voicevox_ros2_tts import tts_SpeakerState
+from voicevox_ros2.voicevox_ros2_tts import tts_SpeakerState
 ```
 　メソッド
 *tts_SpeakerState*

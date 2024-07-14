@@ -1,2 +1,2 @@
 string text
-int8 id
+int32 id

@@ -3,7 +3,7 @@ current_dir=$(dirname "$(readlink -f "$0")")
 
 cd "$current_dir" || exit 1
 
-pypath="$current_dir/voicevox_ros2/voicevox_ros2/voicevox_ros2/voicevox_ros2_common"
+pypath="$current_dir/voicevox_ros2/voicevox_ros2/voicevox_ros2_common"
 
 # bashrc
 # チェックする文字列

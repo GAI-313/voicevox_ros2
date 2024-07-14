@@ -4,15 +4,25 @@ import os
 import subprocess
 
 package_name = 'voicevox_ros2'
+
+data_files = []
+data_files.append(("share/ament_index/resource_index/packages", ["resource/" + package_name]))
+data_files.append(("share/" + package_name, ["package.xml"]))
+
+def package_files(directory, data_files):
+    for (path, directories, filenames) in os.walk(directory):
+        for filename in filenames:
+            data_files.append(("share/" + package_name + "/" + path, glob(path + "/**/*.*", recursive=True)))
+    return data_files
+
+# Add directories
+data_files = package_files("voicevox_ros2/voicevox_ros2_common", data_files)
+
 setup(
     name=package_name,
     version='1.0.0',
     packages=[package_name],
-    data_files=[
-        ('share/ament_index/resource_index/packages',
-            ['resource/' + package_name]),
-        ('share/' + package_name, ['package.xml']),
-    ],
+    data_files=data_files,
     install_requires=['voicevox_ros2_interface',
                         'setuptools',
                         'simpleaudio'],

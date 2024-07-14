@@ -27,9 +27,8 @@ execute_process(
             apt install -y unzip curl alsa-utils pulseaudio;
             curl -sSfL https://raw.githubusercontent.com/VOICEVOX/voicevox_core/8cf307df4412dc0db0b03c6957b83b032770c31a/scripts/downloads/download.sh | bash -s;
             cd \"\$current_dir/voicevox_core\" || exit 1;
-            wget https://github.com/VOICEVOX/voicevox_core/releases/download/0.14.5/voicevox_core-0.14.5+cpu-cp38-abi3-linux_x86_64.whl;
+            wget https://github.com/VOICEVOX/voicevox_core/releases/download/0.15.3/voicevox_core-0.15.3+cpu-cp38-abi3-linux_x86_64.whl;
             pip install voicevox_core*.whl;
-            wget https://raw.githubusercontent.com/VOICEVOX/voicevox_core/406f6c41408836840b9a38489d0f670fb960f412/example/python/run.py;
             wget https://fastapi.metacpan.org/source/MASH/Lingua-JA-Yomi-0.01/lib/Lingua/JA/bep-eng.dic;
             pip install simpleaudio;
             apt update;

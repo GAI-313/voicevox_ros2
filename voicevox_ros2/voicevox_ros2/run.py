@@ -119,7 +119,7 @@ class Voicevox_ros2(Node):
             text = text.replace(" ", "")
 
             out = Path(generate_path)
-            acceleration_mode = AccelerationMode.AUTO
+            acceleration_mode = AccelerationMode.CPU
             core = VoicevoxCore(
                 acceleration_mode=acceleration_mode, open_jtalk_dict_dir=jtalk_path
             )

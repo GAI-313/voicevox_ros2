@@ -97,7 +97,7 @@ if __name__ == '__main__':
     node = Node('sample')
     say(node, text='こんにちは！ボイスボックスロスへようこそ')
     say(node, text='キャラクターIDを変更すると、しゃべるキャラクターが変わります', id=2)
-
+```
 　```tts_speaker```
 は、以下の引数を求めます。
 - **node**<br>

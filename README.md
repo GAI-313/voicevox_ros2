@@ -2,6 +2,9 @@
 
 ## Install
 
+> [!NOTE]
+> Docker 版 voicevox_ros2 は [こちら](https://github.com/GAI-313/voicevox_ros2_docker#)
+
 1. **voicevox_core をインストールする**<br>
     任意の場所で以下のコマンドを実行し VoiceVox_Core をダウンロードします．`VERSION` は任意のバージョンを [こちら](https://github.com/VOICEVOX/voicevox_core/releases) から選択してください．
 

@@ -1,0 +1,13 @@
+
+int8 speaker_id 0
+string text
+bool enable_interrogative_upspeak true
+
+float32 pitch_scale 0.0
+float32 intonation_scale 0.0
+float32 speed_scale 0.0
+float32 volume_scale 0.0
+
+---
+
+bool success

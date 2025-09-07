@@ -76,12 +76,12 @@ $ ros2 run voicevox_ros2 voicevox_ros2 --ros-args \
 ```
 
 > [!CAUTION]
-    以下のようなエラーが発生した場合，各パラメータで指定された voicevox_core のパスが間違えている可能性があります．
-    ```
-    Exception: /ws/onnxruntime/lib/libvoicevox_onnxruntime.so.1.17.3: cannot open shared object file: No such file or directory
-    ...
-    voicevox_core.InitInferenceRuntimeError: ONNX Runtimeのロードまたは初期化ができませんでし
-    ```
+> 以下のようなエラーが発生した場合，各パラメータで指定された voicevox_core のパスが間違えている可能性があります．
+> ```
+> Exception: /ws/onnxruntime/lib/libvoicevox_onnxruntime.so.1.17.3: cannot open shared object file: No such file or directory
+> ...
+> voicevox_core.InitInferenceRuntimeError: ONNX Runtimeのロードまたは初期化ができませんでし
+> ```
 
 ---
 

@@ -10,4 +10,5 @@ float32 volume_scale 0.0
 
 ---
 
+uint8[] wav_data
 bool success
